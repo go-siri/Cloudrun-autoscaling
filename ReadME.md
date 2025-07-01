@@ -24,35 +24,34 @@ The Terraform code in this repo deploys Cloud Run configuration to showcase auto
 ### How to Use This Terraform Code
 1. Prerequisites:
 
-Google Cloud SDK (gcloud CLI): Make sure it's installed and authenticated (gcloud auth login, gcloud config set project YOUR_PROJECT_ID).
+    Google Cloud SDK (gcloud CLI): Make sure it's installed and authenticated (gcloud auth login, gcloud config set project YOUR_PROJECT_ID).
 
-- Terraform: Install Terraform on your machine.
+    - Terraform: Install Terraform on your machine.
 
-- Permissions: Your GCP service account or user needs the following roles:
+    - Permissions: Your GCP service account or user needs the following roles:
 
-    - roles/owner (simplest for a demo, but grant specific roles for production):
+        - roles/owner (simplest for a demo, but grant specific roles for production):
 
-    - roles/cloudrun.admin
+        - roles/cloudrun.admin
 
-    - roles/iam.serviceAccountUser (to allow Cloud Run to use the default service account)
+        - roles/iam.serviceAccountUser (to allow Cloud Run to use the default service account)
 
-    - roles/monitoring.dashboardEditor
+        - roles/monitoring.dashboardEditor
 
-    - roles/compute.admin (if creating the load generator VM)
+        - roles/compute.admin (if creating the load generator VM)
 
-    - roles/editor might also work for most.
+        - roles/editor might also work for most.
 2. Steps
-- Initilize Terraform 
-    `terraform init`
-- Modify terraform.tfvars and update the value for variables project_id & region to match your project id & region where the resources should be created
-- Review the plan
-    `terraform plan`
+    - Initilize Terraform. 
+            `terraform init`
+    - Modify terraform.tfvars and update the value for variables project_id & region to match your project id & region where the resources should be created
+    - Review the plan. 
+            `terraform plan`
     Carefully review the resources to be created
-- Apply the Configuration
-    `terraform apply`
-    
-    Optionally to store the output variables values for reference later on redirect the output to a text file
-    `terraform apply -auto-approve > terraform_apply_output.txt`
+    - Apply the Configuration. 
+            `terraform apply`
+       (optinal) To avoid the prompt during apply and store output in a file, you can use  
+            `terraform apply -auto-approve > terraform_apply_output.txt`
 
 3. After Deployment
     Terraform will output the * *cloud_run_service_url* * and * *monitoring_dashboard_url* *
