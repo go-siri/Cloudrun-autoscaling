@@ -27,8 +27,8 @@ resource "google_cloud_run_service" "demo_app" {
     }
     metadata {
       annotations = {
-        "autoscaling.knative.dev/maxScale"      = "25"
-        "autoscaling.knative.dev/minScale"      = "2"
+        "autoscaling.knative.dev/maxScale"      = "10"
+        "autoscaling.knative.dev/minScale"      = "0"
         # Enable CPU always allocated if you want to avoid CPU throttling when idle
         # "autoscaling.knative.dev/cpu-throttling" : "false"
       }
