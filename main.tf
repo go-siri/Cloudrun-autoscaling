@@ -89,7 +89,7 @@ resource "google_monitoring_dashboard" "cloud_run_scaling_dashboard" {
 
                 }
                 plotType = "LINE"
-                legendTemplate = "$${metric.labels.state}}"
+                legendTemplate = "$${metric.labels.state}"
               }],
               "thresholds": [],
               "yAxis": {
