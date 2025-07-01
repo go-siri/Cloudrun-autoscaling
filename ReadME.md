@@ -55,36 +55,37 @@ Google Cloud SDK (gcloud CLI): Make sure it's installed and authenticated (gclou
     `terraform apply -auto-approve > terraform_apply_output.txt`
 
 3. After Deployment
-Terraform will output the * *cloud_run_service_url* * and * *monitoring_dashboard_url* *
+    Terraform will output the * *cloud_run_service_url* * and * *monitoring_dashboard_url* *
 
-- Open the Cloud Monitoring Dashboard: 
+    - Open the Cloud Monitoring Dashboard: 
     Go to the * *monitoring_dashboard_url* *in your browser. This is where you'll visualize the scaling. Set the refresh rate of the dashboard to the lowest possible (e.g., 5 seconds) to see updates quicker.
 
-- Access the Load Generator VM (if created):
-```
-gcloud compute ssh cloud-run-load-generator --zone=<YOUR_REGION>-a --project=<YOUR_PROJECT_ID>
-``` 
-Replace <YOUR_REGION> and <YOUR_PROJECT_ID> with your actual values.
+    - Access the Load Generator VM (if created):
+    ```
+        gcloud compute ssh cloud-run-load-generator --zone=<YOUR_REGION>-a --project=<YOUR_PROJECT_ID>
+    ``` 
+    Replace <YOUR_REGION> and <YOUR_PROJECT_ID> with your actual values.
 
 4. Generate Load and Observe Scaling:
 
-Once connected to the load generator VM (or from your local machine with ab installed):
+    Once connected to the load generator VM (or from your local machine with ab installed):
 
-Start with a low load:
-`ab -n 1000 -c 10 <YOUR_CLOUD_RUN_SERVICE_URL>`
-(e.g., 1000 requests, 10 concurrent requests)
+    - Start with a low load:    
+        `ab -n 1000 -c 10 <YOUR_CLOUD_RUN_SERVICE_URL>`. 
+      (e.g., 1000 requests, 10 concurrent requests)
 
-Gradually increase the load:
-` ab -n 10000 -c 100 <YOUR_CLOUD_RUN_SERVICE_URL>`
-(e.g., 10,000 requests, 100 concurrent requests)
+    - Gradually increase the load:  
+        ` ab -n 10000 -c 100 <YOUR_CLOUD_RUN_SERVICE_URL>`. 
+      (e.g., 10,000 requests, 100 concurrent requests)
 
-Optional - Push the limits:
-`ab -n 50000 -c 500 <YOUR_CLOUD_RUN_SERVICE_URL>`
-(e.g., 50,000 requests, 100 concurrent requests)
+    - Push the limits:  
+        `ab -n 50000 -c 500 <YOUR_CLOUD_RUN_SERVICE_URL>`. 
+      (e.g., 50,000 requests, 100 concurrent requests)
 
-Observe the Cloud Monitoring dashboard. You should see the "Cloud Run Request Count" spike and then the "Cloud Run Instance Count" graph showing more instances being brought online.
+    Observe the Cloud Monitoring dashboard. You should see the "Cloud Run Request Count" spike and then the "Cloud Run Instance Count" graph showing more instances being brought online.
 
-5. Stop the load: After running the ab commands, stop generating new requests. You should then see the request_count drop, and after a short period (due to Cloud Run's idle instance management), the instance_count will gradually decrease, eventually returning to 0 (if min_instance_count = 0).
+5. Stop the load
+   After running the ab commands, stop generating new requests. You should then see the request_count drop, and after a short period (due to Cloud Run's idle instance management), the instance_count will gradually decrease, eventually returning to 0 (if min_instance_count = 0).
 
 ### Clean Up
 When you're done with the demo, destroy the resources to avoid incurring costs:
