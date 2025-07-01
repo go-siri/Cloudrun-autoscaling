@@ -43,15 +43,15 @@ The Terraform code in this repo deploys Cloud Run configuration to showcase auto
         - roles/editor might also work for most.
 2. Steps
     - Initilize Terraform. 
-            `terraform init`
-    - Modify terraform.tfvars and update the value for variables project_id & region to match your project id & region where the resources should be created
+            ```terraform init```
+    - Modify * *terraform.tfvars* * and update the value for variables project_id & region to match your project id & region where the resources should be created
     - Review the plan. 
-            `terraform plan`
+            ```terraform plan```
     Carefully review the resources to be created
     - Apply the Configuration. 
-            `terraform apply`
+            ```terraform apply```
        (optinal) To avoid the prompt during apply and store output in a file, you can use  
-            `terraform apply -auto-approve > terraform_apply_output.txt`
+            ```terraform apply -auto-approve > terraform_apply_output.txt```
 
 3. After Deployment
     Terraform will output the * *cloud_run_service_url* * and * *monitoring_dashboard_url* *

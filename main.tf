@@ -53,7 +53,7 @@ resource "google_cloud_run_service_iam_member" "demo_app_public_access" {
 
 output "cloud_run_service_url" {
   description = "The URL of the deployed Cloud Run service"
-  value       = google_cloud_run_service.demo_app.status[0].url
+  value       = "${google_cloud_run_service.demo_app.status[0].url}/"
 }
 
 # -----------------------------------------------------------------------------
@@ -83,54 +83,45 @@ resource "google_monitoring_dashboard" "cloud_run_scaling_dashboard" {
                       ],
                       "perSeriesAligner": "ALIGN_MAX"
                     },
-                    "filter": "metric.type=\"run.googleapis.com/container/instance_count\" resource.type=\"cloud_run_revision\" resource.label.\"location\"=\"us-central1\" resource.label.\"project_id\"=\"src-project1\" resource.label.\"service_name\"=\"cloud-run-scaling-demo\""
+                    "filter": "metric.type=\"run.googleapis.com/container/instance_count\" resource.type=\"cloud_run_revision\" resource.label.\"location\"=\"${var.region}\" resource.label.\"project_id\"=\"${var.project_id}\" resource.label.\"service_name\"=\"${google_cloud_run_service.demo_app.name}\""
                   },
                   "unitOverride": ""
 
                 }
                 plotType = "LINE"
-                legendTemplate = "Instance Count"
-              },
+                legendTemplate = "$${metric.label.state}}"
+              }],
+              "thresholds": [],
+              "yAxis": {
+                "label": "",
+                "scale": "LINEAR"
+              }
+            }
+
+          },
+          {
+            title = "Cloud Run Request Count"
+            xyChart = {
+              dataSets = [
               {
                 timeSeriesQuery = {
                    "timeSeriesFilter": {
-                    filter        = "metric.type=\"run.googleapis.com/container/idle_instance_count\" resource.type=\"cloud_run_revision\" resource.labels.service_name=\"${google_cloud_run_service.demo_app.name}\" resource.labels.location=\"${var.region}\""
                     "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"response_code_class\""
+                      ],
                       "perSeriesAligner": "ALIGN_RATE"
-                  }
-                  },
-                  "unitOverride": "1"
-                 
-                }
-                plotType = "LINE"
-                legendTemplate = "Idle Instance Count"
-              }
-            ]
-            timeshiftDuration = "0s"
-            yAxis = {
-              label = "Instance Count"
-              scale = "LINEAR"
-            }
-          }
-        },
-        {
-          title = "Cloud Run Request Count"
-          xyChart = {
-            dataSets = [
-              {
-                timeSeriesQuery = {
-                  "timeSeriesFilter": {
+                    },
                     filter        = "metric.type=\"run.googleapis.com/request_count\" resource.type=\"cloud_run_revision\" resource.labels.service_name=\"${google_cloud_run_service.demo_app.name}\" resource.labels.location=\"${var.region}\""
-                   "aggregation": {
-                      "perSeriesAligner": "ALIGN_RATE"
-                  }
-                  },
+                   },
                   "unitOverride": "1"
                 }
                 plotType = "LINE"
-                legendTemplate = "Requests per minute" # Adjust based on alignment period
+                legendTemplate = "$${metric.labels.response_code_class}" # Adjust based on alignment period
               }
-            ]
+              ],
             timeshiftDuration = "0s"
             yAxis = {
               label = "Requests"
@@ -145,8 +136,9 @@ resource "google_monitoring_dashboard" "cloud_run_scaling_dashboard" {
 
 output "monitoring_dashboard_url" {
   description = "URL to the Cloud Monitoring dashboard"
-  value       = "https://console.cloud.google.com/monitoring/dashboards/builder/${google_monitoring_dashboard.cloud_run_scaling_dashboard.id}?project=${var.project_id}"
-}
+  value       = "https://console.cloud.google.com/monitoring/dashboards/builder/${element(split("/", google_monitoring_dashboard.cloud_run_scaling_dashboard.id), 3)}" 
+ }
+
 
 # -----------------------------------------------------------------------------
 # Google Compute Engine Instance for Load Generation (Optional)
